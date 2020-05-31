@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PlayerActivity">
+
+    <com.example.mymusic.view.RoundRectImageView
+        android:id="@+id/track_cover"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        />
+
+    <TextView
+        android:id="@+id/track_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/track_cover"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="27sp"
+        android:text="此处为track标题"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+    
+    <SeekBar
+        android:id="@+id/track_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/track_title"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="30dp"
+        />
+    
+    <FrameLayout
+        android:layout_below="@id/track_seek"
+        android:layout_width="230dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/player_pre_next_bg"
+            >
+            <ImageView
+                android:id="@+id/play_pre"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/play_prev"
+                />
+
+            <ImageView
+                android:id="@+id/play_next"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="170dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/play_next"
+                />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/play_pause"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/pause_white"
+            android:background="@drawable/play_pause_button_bg"
+            android:padding="20dp"
+            />
+    </FrameLayout>
+
+
+</RelativeLayout>
