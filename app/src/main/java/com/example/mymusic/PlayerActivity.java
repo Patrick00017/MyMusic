@@ -27,6 +27,8 @@ public class PlayerActivity extends AppCompatActivity implements IPlayerCallBack
     private static Boolean m_isPlaying = false;
     private Track m_playingTrack = null;
     private SeekBar m_playBar;
+    private Boolean m_isBarTouched;
+    private int m_progressMeme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,23 @@ public class PlayerActivity extends AppCompatActivity implements IPlayerCallBack
             m_playerPresenter.playNext();
         });
 
-        m_playBar.setMax(100);
+        m_playBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                m_progressMeme = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                m_isBarTouched = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                m_isBarTouched = false;
+                m_playerPresenter.seekTo(m_progressMeme);
+            }
+        });
     }
 
     private void initView() {
@@ -96,8 +114,11 @@ public class PlayerActivity extends AppCompatActivity implements IPlayerCallBack
     }
 
     @Override
-    public void onSeekTo() {
-
+    public void onSeekTo(int currentPos, int total) {
+        if (m_playBar != null) {
+            m_playBar.setMax(total);
+            m_playBar.setProgress(currentPos);
+        }
     }
 
     @Override
@@ -116,6 +137,12 @@ public class PlayerActivity extends AppCompatActivity implements IPlayerCallBack
         m_playingTrack = m_playerPresenter.getPlayingTrack();
         showTrackCoverAndTitle();
         checkPlayBorder();
+    }
+
+    @Override
+    public void updateCoverAndTitle() {
+        m_playingTrack = m_playerPresenter.getPlayingTrack();
+        showTrackCoverAndTitle();
     }
 //==================================================================================================
 

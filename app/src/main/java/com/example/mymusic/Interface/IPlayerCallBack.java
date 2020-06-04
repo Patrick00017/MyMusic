@@ -6,10 +6,12 @@ public interface IPlayerCallBack {
 
     void onTrackPause();
 
-    void onSeekTo();
+    void onSeekTo(int currentPos, int total);
 
     void onPlayPre();
 
     void onPlayNext();
+
+    void updateCoverAndTitle();
 
 }

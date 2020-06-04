@@ -3,20 +3,24 @@ package com.example.mymusic.presenter;
 import com.example.mymusic.Interface.IPlayerCallBack;
 import com.example.mymusic.Interface.IPlayerPresenter;
 import com.example.mymusic.base.BaseApplication;
+import com.ximalaya.ting.android.opensdk.model.PlayableModel;
 import com.ximalaya.ting.android.opensdk.model.track.Track;
 import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
+import com.ximalaya.ting.android.opensdk.player.service.IXmPlayerStatusListener;
+import com.ximalaya.ting.android.opensdk.player.service.XmPlayerException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerPresenter implements IPlayerPresenter {
+public class PlayerPresenter implements IPlayerPresenter, IXmPlayerStatusListener {
     private static PlayerPresenter instance = null;
     private List<IPlayerCallBack> m_callBacks = new ArrayList<>();
     private XmPlayerManager m_playerManager = XmPlayerManager.getInstance(BaseApplication.getAppContext());
     private List<Track> m_tracks = new ArrayList<>();
-    private int m_playIndex = 0;
+    private int m_startPlayIndex = 0;
 
     private PlayerPresenter(){
+        m_playerManager.addPlayerStatusListener(this);
     }
 
     public static PlayerPresenter getInstance(){
@@ -49,13 +53,12 @@ public class PlayerPresenter implements IPlayerPresenter {
 
     @Override
     public void seekTo(int time) {
-
+        m_playerManager.seekTo(time);
     }
 
     @Override
     public void playPre() {
         m_playerManager.playPre();
-        m_playIndex--;
         for(IPlayerCallBack callBack : m_callBacks){
             callBack.onPlayPre();
         }
@@ -64,7 +67,6 @@ public class PlayerPresenter implements IPlayerPresenter {
     @Override
     public void playNext() {
         m_playerManager.playNext();
-        m_playIndex++;
         for(IPlayerCallBack callBack : m_callBacks){
             callBack.onPlayNext();
         }
@@ -83,12 +85,12 @@ public class PlayerPresenter implements IPlayerPresenter {
     }
 
     public void initPlayList(){
-        m_playerManager.playList(m_tracks, m_playIndex);
+        m_playerManager.playList(m_tracks, m_startPlayIndex);
     }
 
     public void setPlayListAndIndex(List<Track> playList, int index){
         m_tracks = playList;
-        m_playIndex = index;
+        m_startPlayIndex = index;
     }
 
     public List<Track> getPlayList(){
@@ -96,7 +98,7 @@ public class PlayerPresenter implements IPlayerPresenter {
     }
 
     public int getPlayIndex(){
-        return m_playIndex;
+        return m_playerManager.getCurrentIndex();
     }
 
     public boolean isPlaying(){
@@ -104,10 +106,69 @@ public class PlayerPresenter implements IPlayerPresenter {
     }
 
     public Track getPlayingTrack(){
-        return m_tracks.get(m_playIndex);
+        return m_tracks.get(m_playerManager.getCurrentIndex());
     }
 
     public int getPlayListSize(){
         return m_tracks.size();
+    }
+
+    //==============================================================================================
+    @Override
+    public void onPlayStart() {
+
+    }
+
+    @Override
+    public void onPlayPause() {
+
+    }
+
+    @Override
+    public void onPlayStop() {
+
+    }
+
+    @Override
+    public void onSoundPlayComplete() {
+    }
+
+    @Override
+    public void onSoundPrepared() {
+
+    }
+
+    @Override
+    public void onSoundSwitch(PlayableModel playableModel, PlayableModel playableModel1) {
+        for(IPlayerCallBack callBack : m_callBacks){
+            callBack.updateCoverAndTitle();
+        }
+    }
+
+    @Override
+    public void onBufferingStart() {
+
+    }
+
+    @Override
+    public void onBufferingStop() {
+
+    }
+
+    @Override
+    public void onBufferProgress(int i) {
+
+    }
+
+    @Override
+    public void onPlayProgress(int current, int total) {
+        for(IPlayerCallBack callBack : m_callBacks){
+            callBack.onSeekTo(current, total);
+        }
+    }
+
+    @Override
+    public boolean onError(XmPlayerException e) {
+        return false;
     }
 }
